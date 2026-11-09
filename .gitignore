@@ -1,0 +1,30 @@
+# Environment files
+.idea
+.venv
+.vscode
+venv
+
+# Build files
+build
+dist
+**.egg-info
+
+# Cache files
+**/__pycache__
+**/*.pyc
+**/__mypy_cache__
+**/__ruff_cache__
+.pytest_cache/
+
+# Test files
+.coverage
+.coverage.*
+.local/
+coverage.xml
+demo/
+htmlcov/
+trace
+
+# Integration test shared directory
+tests/integration/shared/*
+!tests/integration/shared/.gitkeep
