@@ -1,0 +1,182 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pki-pivot"
+version = "0.0.1"
+description = "PKI-Pivot - CSP VM instance-role credential proxy with mutual-TLS token issuer"
+authors = [
+    {name = "Joseph Paz", email = "commits@paz-it.com"},
+]
+readme = { file = "README.md", content-type = "text/markdown" }
+license = "Apache-2.0"
+license-files = ["LICENSE.md"]
+requires-python = ">=3.13"
+classifiers = [
+    # Maturity
+    "Development Status :: 3 - Alpha",
+
+    # Audience
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+
+    # Language
+    "Natural Language :: English",
+
+    # Portability
+    "Operating System :: OS Independent",
+
+    # Python
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+
+    # Topics
+    "Topic :: Internet :: Proxy Servers",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Security",
+    "Topic :: Security :: Cryptography",
+    "Topic :: System :: Networking",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "aiohttp>=3.14.4",
+    "requests>2.34.0"
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.0.0",
+    "ruff>=0.16.06",
+    "pyright[nodejs]>=1.1.389",
+    "types-requests>=2.33.0.20260712",
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "pytest-asyncio>=0.23.0",
+    "cryptography>=42.0.0",
+]
+
+[project.scripts]
+pki-pivot = "pki_pivot.http_proxy:main_entry"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py313"
+include = [
+    "src/**/*.py",
+    "tests/**/*.py",
+]
+exclude = [
+    ".coverage",
+    ".venv",
+    "venv",
+    "__mypy_cache__",
+    "__ruff_cache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+    "C4",  # flake8-comprehensions
+    "BLE", # flake8-blind-except
+    "S",   # flake8-bandit (security)
+    "RUF", # ruff-specific rules
+]
+
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",  # assert detected
+    "S105",  # possible hardcoded password (in tests/mocks)
+    "S106",  # possible hardcoded password (in tests/mocks)
+]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+docstring-code-format = true
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+docstring-code-line-length = "dynamic"
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.13"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+exclude = [
+    "**/.coverage",
+    "**/.venv",
+    "**/venv",
+    "**/__mypy_cache__",
+    "**/__ruff_cache__",
+    "**/build",
+    "**/dist",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "--strict-markers --cov=src --cov-report=term-missing --cov-report=html"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "unit: marks unit tests",
+    "integration: marks integration tests",
+]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 70
+exclude_also = [
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    '^\\s*\\.\\.\\.\\s*$',
+    ': \\.\\.\\.$',
+]
